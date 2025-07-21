@@ -56,6 +56,9 @@ public class Main {
             List<Candidate> listeningCandidates = new ArrayList<>();
             List<Candidate> readingCandidates = new ArrayList<>();
             List<Candidate> writingCandidates = new ArrayList<>();
+            int listeningCandidateCount = 0;
+            int readingCandidateCount = 0;
+            int writingCandidateCount = 0;
 
             try (FileInputStream fis = new FileInputStream(filePath);
                  Workbook workbook = new XSSFWorkbook(fis)) {
@@ -75,10 +78,13 @@ public class Main {
 
                     if (testType.contains("Listening")) {
                         listeningCandidates.add(new Candidate(candidateNumber, firstName, lastName, profession));
+                        listeningCandidateCount +=1;
                     } else if (testType.contains("Reading")) {
                         readingCandidates.add(new Candidate(candidateNumber, firstName, lastName, profession));
+                        readingCandidateCount+=1;
                     } else {
                     writingCandidates.add(new Candidate(candidateNumber, firstName, lastName, profession));
+                    writingCandidateCount+=1;
                     }
             }
 
@@ -90,9 +96,13 @@ public class Main {
             masterList.add(writingCandidates);
 
             System.out.println("Outputting listening, reading, and writing lists...");
+            System.out.println("Listening candidate total: " + listeningCandidateCount);
+            System.out.println("Reading candidate total: " + readingCandidateCount);
+            System.out.println("Writing candidate total: " + writingCandidateCount);
             return masterList;
         }
 
+//        Helper function to convert spreadsheet values to Strings
         private static String getCellValueAsString(Cell cell) {
             if (cell == null) return "";
 
