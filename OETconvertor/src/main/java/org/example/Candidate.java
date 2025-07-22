@@ -1,11 +1,12 @@
 package org.example;
-
 public class Candidate {
-    private final String candidateNumber;
-    private final String firstName;
-    private final String lastName;
-    private final String profession;
 
+    private String candidateNumber;
+    private String firstName;
+    private String lastName;
+    private String profession;
+
+    // constructor
     public Candidate(String candidateNumber, String firstName, String lastName, String profession) {
         this.candidateNumber = candidateNumber;
         this.firstName = firstName;
@@ -13,26 +14,14 @@ public class Candidate {
         this.profession = profession;
     }
 
-    public String getCandidateNumber() {
-        return candidateNumber;
-    }
+    // getters
+    public String getCandidateNumber() { return candidateNumber; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public String getProfession() { return profession; }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getProfession() {
-        return profession;
-    }
-
-
-    @Override
-    public String toString() {
-        return String.format("Candidate: %s %s (ID: %s, Profession: %s)",
-                firstName, lastName, candidateNumber, profession);
-    }
+    // setters
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setProfession(String profession) { this.profession = profession; }
 }
