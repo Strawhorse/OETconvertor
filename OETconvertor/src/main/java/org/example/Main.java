@@ -52,8 +52,6 @@ public class Main {
 
             System.out.println(); // empty line between rooms
         }
-
-
     }
 
 
@@ -65,50 +63,50 @@ public class Main {
 
 
 //    Method for reading the Excel spreadsheet
-public static List<Candidate> readCandidates(String filePath, String sheetName) throws Exception {
-    Map<String, Candidate> uniqueCandidates = new LinkedHashMap<>();
+    public static List<Candidate> readCandidates(String filePath, String sheetName) throws Exception {
+        Map<String, Candidate> uniqueCandidates = new LinkedHashMap<>();
 
-    try (FileInputStream fis = new FileInputStream(filePath);
-         Workbook workbook = new XSSFWorkbook(fis)) {
+        try (FileInputStream fis = new FileInputStream(filePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
 
-        Sheet sheet = workbook.getSheet(sheetName);
-        if (sheet == null) throw new IllegalArgumentException("Sheet not found: " + sheetName);
+            Sheet sheet = workbook.getSheet(sheetName);
+            if (sheet == null) throw new IllegalArgumentException("Sheet not found: " + sheetName);
 
-        for (int i = 1; i <= sheet.getLastRowNum(); i++) { // skip header row
-            Row row = sheet.getRow(i);
-            if (row == null) continue;
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) { // skip header row
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
 
-            String candidateNumber = getCellValueAsString(row.getCell(0));
-            String firstName = getCellValueAsString(row.getCell(1));
-            String lastName = getCellValueAsString(row.getCell(2));
-            String profession = getCellValueAsString(row.getCell(10));
+                String candidateNumber = getCellValueAsString(row.getCell(0));
+                String firstName = getCellValueAsString(row.getCell(1));
+                String lastName = getCellValueAsString(row.getCell(2));
+                String profession = getCellValueAsString(row.getCell(10));
 
-            if (candidateNumber.isEmpty()) continue;
+                if (candidateNumber.isEmpty()) continue;
 
-            if (uniqueCandidates.containsKey(candidateNumber)) {
-                Candidate existing = uniqueCandidates.get(candidateNumber);
+                if (uniqueCandidates.containsKey(candidateNumber)) {
+                    Candidate existing = uniqueCandidates.get(candidateNumber);
 
-                // Fill in missing fields if new row has better data
-                if ((existing.getFirstName() == null || existing.getFirstName().isBlank()) && !firstName.isBlank()) {
-                    existing.setFirstName(firstName);
+                    // Fill in missing fields if new row has better data
+                    if ((existing.getFirstName() == null || existing.getFirstName().isBlank()) && !firstName.isBlank()) {
+                        existing.setFirstName(firstName);
+                    }
+
+                    if ((existing.getLastName() == null || existing.getLastName().isBlank()) && !lastName.isBlank()) {
+                        existing.setLastName(lastName);
+                    }
+
+                    if ((existing.getProfession() == null || existing.getProfession().isBlank()) && !profession.isBlank()) {
+                        existing.setProfession(profession);
+                    }
+
+                } else {
+                    uniqueCandidates.put(candidateNumber, new Candidate(candidateNumber, firstName, lastName, profession));
                 }
-
-                if ((existing.getLastName() == null || existing.getLastName().isBlank()) && !lastName.isBlank()) {
-                    existing.setLastName(lastName);
-                }
-
-                if ((existing.getProfession() == null || existing.getProfession().isBlank()) && !profession.isBlank()) {
-                    existing.setProfession(profession);
-                }
-
-            } else {
-                uniqueCandidates.put(candidateNumber, new Candidate(candidateNumber, firstName, lastName, profession));
             }
         }
-    }
 
-    return new ArrayList<>(uniqueCandidates.values());
-}
+        return new ArrayList<>(uniqueCandidates.values());
+    }
 
 
 
