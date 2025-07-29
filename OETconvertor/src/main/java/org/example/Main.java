@@ -51,6 +51,7 @@ public class Main {
 
         // method to write the Invigilator sheet on the spreadsheet - use the same spreadsheet as before
         writeCandidatesToInvigilatorSheet(inputFilePath, lrwRooms, roomNames);
+        writeCandidatesToInterlocutor(inputFilePath, lrwRooms);
 }
 
 
@@ -229,6 +230,13 @@ public class Main {
             System.out.println("Updated Invigilator sheet written to: " + filePath);
             System.out.println("Thank you and fuck you");
         }
+
+
+// write to interlocutor tab
+    public static void writeCandidatesToInterlocutor(String filePath, List<List<Candidate>> sortedCandidates) throws IOException {
+
+        System.out.println("Candidates written to Interlocutor tab");
+    }
 
 
 }
