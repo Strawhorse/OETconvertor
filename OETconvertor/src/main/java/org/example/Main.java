@@ -227,6 +227,7 @@ public class Main {
             workbook.close();
 
             System.out.println("✅ Updated Invigilator sheet written to: " + filePath);
+            System.out.println("Thank you, and fuck you");
         }
 
 
