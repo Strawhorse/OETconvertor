@@ -1,6 +1,5 @@
 package org.example;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.swing.*;
 import java.io.*;
@@ -50,6 +49,7 @@ public class Main {
             System.out.println(); // empty line between rooms
         }
 
+        // method to write the Invigilator sheet on the spreadsheet - use the same spreadsheet as before
         writeCandidatesToInvigilatorSheet(inputFilePath, lrwRooms, roomNames);
 }
 
@@ -226,8 +226,8 @@ public class Main {
             }
             workbook.close();
 
-            System.out.println("✅ Updated Invigilator sheet written to: " + filePath);
-            System.out.println("Thank you, and fuck you");
+            System.out.println("Updated Invigilator sheet written to: " + filePath);
+            System.out.println("Thank you and fuck you");
         }
 
 
