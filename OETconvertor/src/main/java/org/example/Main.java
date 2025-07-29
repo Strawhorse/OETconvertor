@@ -3,8 +3,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.swing.*;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.*;
 
 
@@ -50,11 +49,9 @@ public class Main {
 
             System.out.println(); // empty line between rooms
         }
-    }
 
-
-
-
+        writeCandidatesToInvigilatorSheet(inputFilePath, lrwRooms, roomNames);
+}
 
 
 
@@ -164,32 +161,73 @@ public class Main {
 
 
 //    Method to write out candidates from the LRW sheet to the invigilator sheet, sorted by room number
-    public static void writeCandidates(List<List<Candidate>> candidates) {
-        Workbook workbook = new XSSFWorkbook();
+        public static void writeCandidatesToInvigilatorSheet(String filePath, List<List<Candidate>> sortedCandidates, List<String> roomNames) throws IOException {
+            FileInputStream fis = new FileInputStream(filePath);
+            Workbook workbook = new XSSFWorkbook(fis);
+            fis.close();
 
-        Sheet sheet = workbook.createSheet("Invigilator");
-        sheet.setColumnWidth(0, 6000);
-        sheet.setColumnWidth(1, 4000);
+            // Remove old "Invigilator" sheet if it exists
+            Sheet oldSheet = workbook.getSheet("Invigilator");
+            if (oldSheet != null) {
+                int index = workbook.getSheetIndex(oldSheet);
+                workbook.removeSheetAt(index);
+            }
 
-        Row header = sheet.createRow(0);
+            Sheet sheet = workbook.createSheet("Invigilator");
 
-        CellStyle headerStyle = workbook.createCellStyle();
-        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            // Create header style (optional: re-use your style from before)
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
 
-        XSSFFont font = ((XSSFWorkbook) workbook).createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short) 16);
-        font.setBold(true);
-        headerStyle.setFont(font);
+            int rowIndex = 0;
 
-        Cell headerCell = header.createCell(0);
-        headerCell.setCellValue("Name");
-        headerCell.setCellStyle(headerStyle);
+            for (int i = 0; i < sortedCandidates.size(); i++) {
+                String roomName = roomNames.get(i);
+                List<Candidate> room = sortedCandidates.get(i);
 
-        headerCell = header.createCell(1);
-        headerCell.setCellValue("Age");
-        headerCell.setCellStyle(headerStyle);
-    }
+                // Room name row
+                Row roomRow = sheet.createRow(rowIndex++);
+                Cell roomCell = roomRow.createCell(0);
+                roomCell.setCellValue(roomName);
+                roomCell.setCellStyle(headerStyle);
+
+                // Header row
+                Row headerRow = sheet.createRow(rowIndex++);
+                String[] headers = {"Candidate Number", "First Name", "Last Name", "Profession"};
+                for (int j = 0; j < headers.length; j++) {
+                    Cell cell = headerRow.createCell(j);
+                    cell.setCellValue(headers[j]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // Candidate rows
+                for (Candidate c : room) {
+                    Row row = sheet.createRow(rowIndex++);
+                    row.createCell(0).setCellValue(c.getCandidateNumber());
+                    row.createCell(1).setCellValue(c.getFirstName());
+                    row.createCell(2).setCellValue(c.getLastName());
+                    row.createCell(3).setCellValue(c.getProfession());
+                }
+
+                // Add 1 empty row between rooms
+                rowIndex++;
+            }
+
+            // Auto-size columns for readability
+            for (int i = 0; i < 4; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Save changes
+            try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                workbook.write(fos);
+            }
+            workbook.close();
+
+            System.out.println("✅ Updated Invigilator sheet written to: " + filePath);
+        }
+
 
 }
