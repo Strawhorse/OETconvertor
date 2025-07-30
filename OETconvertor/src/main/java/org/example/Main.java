@@ -115,25 +115,19 @@ public class Main {
         rooms.add(new ArrayList<>()); // Room 14
 
         int roomCapacity = 15;
-        int currentRoom = 0;
+        int roomIndex = 0;
 
-        for (Candidate c : candidates) {
-            boolean assigned = false;
-
-            // Try to assign to one of the first 3 rooms
-            for (int i = 0; i < 3; i++) {
-                int index = (currentRoom + i) % 3;
-                if (rooms.get(index).size() < roomCapacity) {
-                    rooms.get(index).add(c);
-                    currentRoom = (index + 1) % 3;  // rotate only after successful assign
-                    assigned = true;
-                    break;
-                }
+        for (int i = 0; i < candidates.size(); i++) {
+            if (rooms.get(roomIndex).size() >= roomCapacity && roomIndex < 2) {
+                // Move to next room (Room 2 -> Room 4 -> Room 7) if capacity is full
+                roomIndex++;
             }
 
-            // Fallback to Room 14 if all 3 are full
-            if (!assigned) {
-                rooms.get(3).add(c);
+            // If all 3 rooms are full, send remaining to Room 14
+            if (roomIndex >= 3) {
+                rooms.get(3).add(candidates.get(i));
+            } else {
+                rooms.get(roomIndex).add(candidates.get(i));
             }
         }
 
